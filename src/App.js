@@ -63,7 +63,7 @@ function AppInner() {
         {tab === 'stock'   && <StockPage />}
         {tab === 'approve' && isAdmin && <ApprovePage />}
         {tab === 'log'     && <LogPage />}
-        {tab === 'report'  && isAdmin && <ReportPage />}
+        {tab === 'report'  && <ReportPage />}
       </div>
 
       {/* Bottom Nav */}

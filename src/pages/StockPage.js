@@ -253,7 +253,7 @@ export default function StockPage() {
           <label style={lbl}>เหตุผล / หมายเหตุ</label>
           <input value={moveNote} onChange={e => setMoveNote(e.target.value)} placeholder="เช่น ใช้งานประชุม" style={inp} />
           <div style={{ background:'#E6F1FB', borderRadius:'8px', padding:'10px 12px', marginBottom:'14px', fontSize:'13px', color:'#185FA5' }}>
-            📱 Admin จะได้รับแจ้งเตือนทาง Line
+            📱 Admin จะได้รับแจ้งเตือนทาง E mail
           </div>
           <div style={{ display:'flex', gap:'8px' }}>
             <button onClick={() => setModal(null)} style={btnSecondary}>ยกเลิก</button>

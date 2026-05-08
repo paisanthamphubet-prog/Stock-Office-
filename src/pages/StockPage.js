@@ -102,12 +102,28 @@ export default function StockPage() {
       requested_by: profile?.id, requester_name: profile?.display_name,
       status: 'pending'
     })
-    const lineToken = process.env.REACT_APP_LINE_NOTIFY_TOKEN
-    if (lineToken) {
-      await fetch('https://notify-api.line.me/api/notify', {
+    const resendKey = process.env.REACT_APP_RESEND_API_KEY
+    const adminEmail = process.env.REACT_APP_ADMIN_EMAIL
+    if (resendKey && adminEmail) {
+      await fetch('https://api.resend.com/emails', {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${lineToken}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `message=${encodeURIComponent(`\n📦 คำขอเบิกสินค้าใหม่\nสินค้า: ${product.name}\nจำนวน: ${moveQty} ${product.unit}\nผู้ขอ: ${profile?.display_name}\nหมายเหตุ: ${moveNote || '-'}`)}`
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'StockOffice <onboarding@resend.dev>',
+          to: [adminEmail],
+          subject: `📦 คำขอเบิก: ${product.name} (${moveQty} ${product.unit})`,
+          html: `
+            <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px">
+              <h2 style="color:#1D9E75;margin:0 0 16px">📦 มีคำขอเบิกสินค้าใหม่</h2>
+              <table style="width:100%;border-collapse:collapse;font-size:15px">
+                <tr><td style="padding:8px 0;color:#666">สินค้า</td><td style="padding:8px 0;font-weight:600">${product.name}</td></tr>
+                <tr><td style="padding:8px 0;color:#666">จำนวน</td><td style="padding:8px 0;font-weight:600">${moveQty} ${product.unit}</td></tr>
+                <tr><td style="padding:8px 0;color:#666">ผู้ขอ</td><td style="padding:8px 0">${profile?.display_name}</td></tr>
+                <tr><td style="padding:8px 0;color:#666">หมายเหตุ</td><td style="padding:8px 0">${moveNote || '-'}</td></tr>
+              </table>
+              <p style="margin:16px 0 0;font-size:13px;color:#999">กรุณาเปิดแอป StockOffice เพื่ออนุมัติหรือปฏิเสธคำขอ</p>
+            </div>`
+        })
       }).catch(() => {})
     }
     toast.success('ส่งคำขอแล้ว รอ Admin อนุมัติ')
@@ -253,7 +269,7 @@ export default function StockPage() {
           <label style={lbl}>เหตุผล / หมายเหตุ</label>
           <input value={moveNote} onChange={e => setMoveNote(e.target.value)} placeholder="เช่น ใช้งานประชุม" style={inp} />
           <div style={{ background:'#E6F1FB', borderRadius:'8px', padding:'10px 12px', marginBottom:'14px', fontSize:'13px', color:'#185FA5' }}>
-            📱 Admin จะได้รับแจ้งเตือนทาง E mail
+            📧 Admin จะได้รับแจ้งเตือนทาง Email
           </div>
           <div style={{ display:'flex', gap:'8px' }}>
             <button onClick={() => setModal(null)} style={btnSecondary}>ยกเลิก</button>

@@ -10,7 +10,7 @@ import ApprovePage from './pages/ApprovePage'
 import { supabase } from './lib/supabase'
 
 function AppInner() {
-  const { user, profile, loading } = useAuth()
+  const { user, profile, loading, signOut } = useAuth()
   const [tab, setTab] = useState('stock')
   const isAdmin = profile?.role === 'admin'
 
@@ -49,6 +49,11 @@ function AppInner() {
               color: isAdmin ? '#0F6E56' : '#185FA5' }}>
               {isAdmin ? '👑 Admin' : '👤 ' + (profile?.display_name || 'User')}
             </span>
+            <button onClick={signOut}
+              style={{ fontSize:'12px', padding:'3px 10px', borderRadius:'20px', border:'1px solid #e5e7eb',
+                background:'#fff', color:'#9ca3af', cursor:'pointer', fontFamily:'inherit' }}>
+              ออก
+            </button>
           </div>
         </div>
       </div>
